@@ -1,50 +1,44 @@
-# React + TypeScript + Vite
+# 캔버스 드로잉
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+웹의 Canvas API를 사용하여 그림을 그릴 수 있는 프로젝트
 
-Currently, two official plugins are available:
+## 개발 환경
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Node.js 버전
 
-## Expanding the ESLint configuration
+- `Node.js v18.17.0`
+- `npm v9.6.7`
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### 의존성 설치
 
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```bash
+npm install
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+### 개발서버 실행
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+```bash
+npm run dev
 ```
+
+### 라이브러리
+
+- `React v18.3.1`
+- `TailwindCSS v3.4.14`
+
+### 기타
+
+- `Claude v3.5`
+
+## 제공 기능
+
+- 색상 선택
+- 그리기/지우기 모드 선택
+- 이미지 파일로 저장
+- 전체 지우기
+
+## 추가 예정 기능
+
+- 실행 취소
+- OpenAI API 연동
+- 다른 사람들이 그린 이미지들 모아보는 게시판 구현
