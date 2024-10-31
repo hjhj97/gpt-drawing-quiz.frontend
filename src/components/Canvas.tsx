@@ -9,6 +9,7 @@ const Canvas: React.FC<CanvasProps> = ({ width = 800, height = 600 }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [isDrawing, setIsDrawing] = useState<boolean>(false);
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
+  const [currentColor, setCurrentColor] = useState<string>("#000000");
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -17,11 +18,16 @@ const Canvas: React.FC<CanvasProps> = ({ width = 800, height = 600 }) => {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    ctx.strokeStyle = "black";
+    ctx.strokeStyle = currentColor;
     ctx.lineWidth = 2;
     ctx.lineCap = "round";
     setContext(ctx);
   }, []);
+
+  useEffect(() => {
+    if (!context) return;
+    context.strokeStyle = currentColor;
+  }, [currentColor, context]);
 
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>): void => {
     if (!context) return;
@@ -48,16 +54,29 @@ const Canvas: React.FC<CanvasProps> = ({ width = 800, height = 600 }) => {
   };
 
   return (
-    <canvas
-      ref={canvasRef}
-      width={width}
-      height={height}
-      style={{ border: "1px solid black" }}
-      onMouseDown={startDrawing}
-      onMouseMove={draw}
-      onMouseUp={stopDrawing}
-      onMouseOut={stopDrawing}
-    />
+    <div>
+      <div style={{ marginBottom: "1rem" }}>
+        <label htmlFor="colorPicker" style={{ marginRight: "0.5rem" }}>
+          색상 선택:
+        </label>
+        <input
+          id="colorPicker"
+          type="color"
+          value={currentColor}
+          onChange={(e) => setCurrentColor(e.target.value)}
+        />
+      </div>
+      <canvas
+        ref={canvasRef}
+        width={width}
+        height={height}
+        style={{ border: "1px solid black" }}
+        onMouseDown={startDrawing}
+        onMouseMove={draw}
+        onMouseUp={stopDrawing}
+        onMouseOut={stopDrawing}
+      />
+    </div>
   );
 };
 
