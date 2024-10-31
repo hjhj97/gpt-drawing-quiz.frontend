@@ -88,6 +88,13 @@ export const useCanvas = ({ width, height }: UseCanvasProps) => {
     link.click();
   };
 
+  const clearCanvas = () => {
+    if (!context || !canvasRef.current) return;
+
+    // 캔버스 전체 지우기
+    context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+  };
+
   return {
     canvasRef,
     currentColor,
@@ -98,5 +105,6 @@ export const useCanvas = ({ width, height }: UseCanvasProps) => {
     setCurrentColor,
     toggleMode,
     saveImage,
+    clearCanvas,
   };
 };

@@ -17,6 +17,7 @@ const Canvas: React.FC<CanvasProps> = ({ width = 800, height = 600 }) => {
     setCurrentColor,
     toggleMode,
     saveImage,
+    clearCanvas,
   } = useCanvas({ width, height });
 
   return (
@@ -55,6 +56,13 @@ const Canvas: React.FC<CanvasProps> = ({ width = 800, height = 600 }) => {
           className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-md transition-colors"
         >
           이미지 저장
+        </button>
+
+        <button
+          onClick={clearCanvas}
+          className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-md transition-colors"
+        >
+          전체 지우기
         </button>
       </div>
 
