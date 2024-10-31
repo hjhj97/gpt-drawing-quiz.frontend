@@ -1,96 +1,23 @@
-import React, { useRef, useEffect, useState } from "react";
+import React from "react";
+import { useCanvas } from "../hooks/useCanvas";
 
 interface CanvasProps {
   width?: number;
   height?: number;
 }
 
-type DrawingMode = "draw" | "erase";
-
 const Canvas: React.FC<CanvasProps> = ({ width = 800, height = 600 }) => {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [isDrawing, setIsDrawing] = useState<boolean>(false);
-  const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
-  const [currentColor, setCurrentColor] = useState<string>("#000000");
-  const [drawingMode, setDrawingMode] = useState<DrawingMode>("draw");
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    ctx.strokeStyle = currentColor;
-    ctx.lineWidth = 2;
-    ctx.lineCap = "round";
-    setContext(ctx);
-  }, []);
-
-  useEffect(() => {
-    if (!context) return;
-
-    if (drawingMode === "erase") {
-      context.globalCompositeOperation = "destination-out";
-      context.strokeStyle = "rgba(0,0,0,1)";
-    } else {
-      context.globalCompositeOperation = "source-over";
-      context.strokeStyle = currentColor;
-    }
-  }, [drawingMode, currentColor, context]);
-
-  const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>): void => {
-    if (!context) return;
-
-    const { offsetX, offsetY } = e.nativeEvent;
-    context.beginPath();
-    context.moveTo(offsetX, offsetY);
-    setIsDrawing(true);
-  };
-
-  const draw = (e: React.MouseEvent<HTMLCanvasElement>): void => {
-    if (!isDrawing || !context) return;
-
-    const { offsetX, offsetY } = e.nativeEvent;
-    context.lineTo(offsetX, offsetY);
-    context.stroke();
-  };
-
-  const stopDrawing = (): void => {
-    if (!context) return;
-
-    context.closePath();
-    setIsDrawing(false);
-  };
-
-  const toggleMode = () => {
-    setDrawingMode((prev) => (prev === "draw" ? "erase" : "draw"));
-  };
-
-  const saveImage = () => {
-    if (!canvasRef.current) return;
-
-    // 현재 날짜와 시간을 파일명에 포함
-    const date = new Date();
-    const fileName = `drawing-${date.getFullYear()}${(date.getMonth() + 1)
-      .toString()
-      .padStart(2, "0")}${date.getDate().toString().padStart(2, "0")}-${date
-      .getHours()
-      .toString()
-      .padStart(2, "0")}${date.getMinutes().toString().padStart(2, "0")}${date
-      .getSeconds()
-      .toString()
-      .padStart(2, "0")}`;
-
-    // 캔버스를 이미지 데이터로 변환
-    const image = canvasRef.current.toDataURL("image/png");
-
-    // 다운로드 링크 생성 및 클릭
-    const link = document.createElement("a");
-    link.download = `${fileName}.png`;
-    link.href = image;
-    link.click();
-  };
+  const {
+    canvasRef,
+    currentColor,
+    drawingMode,
+    startDrawing,
+    draw,
+    stopDrawing,
+    setCurrentColor,
+    toggleMode,
+    saveImage,
+  } = useCanvas({ width, height });
 
   return (
     <div>
