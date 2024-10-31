@@ -67,6 +67,31 @@ const Canvas: React.FC<CanvasProps> = ({ width = 800, height = 600 }) => {
     setDrawingMode((prev) => (prev === "draw" ? "erase" : "draw"));
   };
 
+  const saveImage = () => {
+    if (!canvasRef.current) return;
+
+    // 현재 날짜와 시간을 파일명에 포함
+    const date = new Date();
+    const fileName = `drawing-${date.getFullYear()}${(date.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}${date.getDate().toString().padStart(2, "0")}-${date
+      .getHours()
+      .toString()
+      .padStart(2, "0")}${date.getMinutes().toString().padStart(2, "0")}${date
+      .getSeconds()
+      .toString()
+      .padStart(2, "0")}`;
+
+    // 캔버스를 이미지 데이터로 변환
+    const image = canvasRef.current.toDataURL("image/png");
+
+    // 다운로드 링크 생성 및 클릭
+    const link = document.createElement("a");
+    link.download = `${fileName}.png`;
+    link.href = image;
+    link.click();
+  };
+
   return (
     <div>
       <div
@@ -102,6 +127,20 @@ const Canvas: React.FC<CanvasProps> = ({ width = 800, height = 600 }) => {
           }}
         >
           {drawingMode === "draw" ? "지우개 모드" : "그리기 모드"}
+        </button>
+
+        <button
+          onClick={saveImage}
+          style={{
+            padding: "0.5rem 1rem",
+            backgroundColor: "#28a745",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+          }}
+        >
+          이미지 저장
         </button>
       </div>
 
