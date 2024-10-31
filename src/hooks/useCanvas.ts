@@ -7,11 +7,20 @@ interface UseCanvasProps {
   height: number;
 }
 
+// 색상 상수 추가
+export const COLORS = {
+  BLACK: "#000000",
+  RED: "#FF0000",
+  BLUE: "#0000FF",
+  GREEN: "#008000",
+  YELLOW: "#FFD700",
+} as const;
+
 export const useCanvas = ({ width, height }: UseCanvasProps) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [isDrawing, setIsDrawing] = useState<boolean>(false);
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
-  const [currentColor, setCurrentColor] = useState<string>("#000000");
+  const [currentColor, setCurrentColor] = useState<string>(COLORS.BLACK);
   const [drawingMode, setDrawingMode] = useState<DrawingMode>("draw");
 
   useEffect(() => {

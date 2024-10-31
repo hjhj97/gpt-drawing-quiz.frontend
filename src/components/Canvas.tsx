@@ -1,10 +1,37 @@
 import React from "react";
-import { useCanvas } from "../hooks/useCanvas";
+import { useCanvas, COLORS } from "../hooks/useCanvas";
 
 interface CanvasProps {
   width?: number;
   height?: number;
 }
+
+interface ColorButtonProps {
+  color: string;
+  isSelected: boolean;
+  onClick: () => void;
+  disabled?: boolean;
+}
+
+// 색상 선택 버튼 컴포넌트
+const ColorButton: React.FC<ColorButtonProps> = ({
+  color,
+  isSelected,
+  onClick,
+  disabled,
+}) => (
+  <button
+    onClick={onClick}
+    disabled={disabled}
+    className={`
+      w-8 h-8 rounded-full transition-all
+      ${isSelected ? "ring-2 ring-offset-2 ring-gray-400" : ""}
+      ${disabled ? "opacity-50 cursor-not-allowed" : "hover:scale-110"}
+    `}
+    style={{ backgroundColor: color }}
+    aria-label={`Select ${color} color`}
+  />
+);
 
 const Canvas: React.FC<CanvasProps> = ({ width = 800, height = 600 }) => {
   const {
@@ -23,18 +50,19 @@ const Canvas: React.FC<CanvasProps> = ({ width = 800, height = 600 }) => {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-4">
-        <div className="flex items-center">
-          <label htmlFor="colorPicker" className="mr-2">
-            색상 선택:
-          </label>
-          <input
-            id="colorPicker"
-            type="color"
-            value={currentColor}
-            onChange={(e) => setCurrentColor(e.target.value)}
-            disabled={drawingMode === "erase"}
-            className="w-8 h-8 rounded cursor-pointer disabled:opacity-50"
-          />
+        <div className="flex items-center gap-2">
+          <span className="mr-2">색상:</span>
+          <div className="flex gap-2">
+            {Object.entries(COLORS).map(([name, color]) => (
+              <ColorButton
+                key={color}
+                color={color}
+                isSelected={currentColor === color}
+                onClick={() => setCurrentColor(color)}
+                disabled={drawingMode === "erase"}
+              />
+            ))}
+          </div>
         </div>
 
         <button
