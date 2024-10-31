@@ -20,17 +20,10 @@ const Canvas: React.FC<CanvasProps> = ({ width = 800, height = 600 }) => {
   } = useCanvas({ width, height });
 
   return (
-    <div>
-      <div
-        style={{
-          marginBottom: "1rem",
-          display: "flex",
-          gap: "1rem",
-          alignItems: "center",
-        }}
-      >
-        <div>
-          <label htmlFor="colorPicker" style={{ marginRight: "0.5rem" }}>
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center gap-4">
+        <div className="flex items-center">
+          <label htmlFor="colorPicker" className="mr-2">
             색상 선택:
           </label>
           <input
@@ -39,33 +32,27 @@ const Canvas: React.FC<CanvasProps> = ({ width = 800, height = 600 }) => {
             value={currentColor}
             onChange={(e) => setCurrentColor(e.target.value)}
             disabled={drawingMode === "erase"}
+            className="w-8 h-8 rounded cursor-pointer disabled:opacity-50"
           />
         </div>
 
         <button
           onClick={toggleMode}
-          style={{
-            padding: "0.5rem 1rem",
-            backgroundColor: drawingMode === "erase" ? "#ff4444" : "#4444ff",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-          }}
+          className={`
+            px-4 py-2 rounded-md text-white transition-colors
+            ${
+              drawingMode === "erase"
+                ? "bg-red-500 hover:bg-red-600"
+                : "bg-blue-500 hover:bg-blue-600"
+            }
+          `}
         >
           {drawingMode === "draw" ? "지우개 모드" : "그리기 모드"}
         </button>
 
         <button
           onClick={saveImage}
-          style={{
-            padding: "0.5rem 1rem",
-            backgroundColor: "#28a745",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-          }}
+          className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-md transition-colors"
         >
           이미지 저장
         </button>
@@ -75,10 +62,10 @@ const Canvas: React.FC<CanvasProps> = ({ width = 800, height = 600 }) => {
         ref={canvasRef}
         width={width}
         height={height}
-        style={{
-          border: "1px solid black",
-          cursor: drawingMode === "erase" ? "crosshair" : "default",
-        }}
+        className={`
+          border border-gray-300 rounded-lg
+          ${drawingMode === "erase" ? "cursor-crosshair" : "cursor-default"}
+        `}
         onMouseDown={startDrawing}
         onMouseMove={draw}
         onMouseUp={stopDrawing}
