@@ -51,12 +51,7 @@ const Canvas: React.FC<CanvasProps> = ({ width = 800, height = 600 }) => {
         isMessageLoading={isMessageLoading}
         clearCanvas={clearCanvas}
       />
-      {message && (
-        <CanvasBottomText
-          message={message}
-          isMessageLoading={isMessageLoading}
-        />
-      )}
+      <CanvasBottomText message={message} isMessageLoading={isMessageLoading} />
     </div>
   );
 };
