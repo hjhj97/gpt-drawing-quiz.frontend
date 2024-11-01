@@ -1,6 +1,7 @@
 import React from "react";
 import { useCanvas } from "../hooks/useCanvas";
 import { CanvasController } from "./CanvasController";
+import CanvasBottomText from "./CanvasBottomText";
 
 interface CanvasProps {
   width?: number;
@@ -20,10 +21,13 @@ const Canvas: React.FC<CanvasProps> = ({ width = 800, height = 600 }) => {
     saveImage,
     clearCanvas,
     sendImage,
+    message,
+    isMessageLoading,
   } = useCanvas({ width, height });
 
   return (
     <div className="flex flex-col gap-4">
+      <h1>Canvas</h1>
       <canvas
         ref={canvasRef}
         width={width}
@@ -44,8 +48,15 @@ const Canvas: React.FC<CanvasProps> = ({ width = 800, height = 600 }) => {
         toggleMode={toggleMode}
         saveImage={saveImage}
         sendImage={sendImage}
+        isMessageLoading={isMessageLoading}
         clearCanvas={clearCanvas}
       />
+      {message && (
+        <CanvasBottomText
+          message={message}
+          isMessageLoading={isMessageLoading}
+        />
+      )}
     </div>
   );
 };

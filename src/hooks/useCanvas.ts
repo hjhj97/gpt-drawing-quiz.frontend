@@ -23,6 +23,8 @@ export const useCanvas = ({ width, height }: UseCanvasProps) => {
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
   const [currentColor, setCurrentColor] = useState<string>(COLORS.BLACK);
   const [drawingMode, setDrawingMode] = useState<DrawingMode>("draw");
+  const [isMessageLoading, setIsMessageLoading] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>("");
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -100,8 +102,17 @@ export const useCanvas = ({ width, height }: UseCanvasProps) => {
     if (!imageData) {
       throw new Error("Image data is not available");
     }
-    const response = await sendMessage(imageData);
-    console.log(response);
+
+    try {
+      setIsMessageLoading(true);
+      const response = await sendMessage(imageData);
+      console.log(response);
+      setMessage(response);
+    } catch (error) {
+      alert("서버 오류가 발생했습니다." + error);
+    } finally {
+      setIsMessageLoading(false);
+    }
   };
 
   const saveImage = () => {
@@ -123,9 +134,12 @@ export const useCanvas = ({ width, height }: UseCanvasProps) => {
 
     // 캔버스 전체 지우기
     context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+    setMessage("");
   };
 
   return {
+    isMessageLoading,
+    message,
     canvasRef,
     currentColor,
     drawingMode,
