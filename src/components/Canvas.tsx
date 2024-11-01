@@ -19,6 +19,7 @@ const Canvas: React.FC<CanvasProps> = ({ width = 800, height = 600 }) => {
     toggleMode,
     saveImage,
     clearCanvas,
+    sendImage,
   } = useCanvas({ width, height });
 
   return (
@@ -42,6 +43,7 @@ const Canvas: React.FC<CanvasProps> = ({ width = 800, height = 600 }) => {
         setCurrentColor={setCurrentColor}
         toggleMode={toggleMode}
         saveImage={saveImage}
+        sendImage={sendImage}
         clearCanvas={clearCanvas}
       />
     </div>

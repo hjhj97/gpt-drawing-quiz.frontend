@@ -1,6 +1,5 @@
 import React from "react";
 import { COLORS } from "../hooks/useCanvas";
-import { useCanvasController } from "../hooks/useCanvasController";
 
 interface ColorButtonProps {
   color: string;
@@ -35,18 +34,18 @@ interface CanvasControllerProps {
   toggleMode: () => void;
   saveImage: () => void;
   clearCanvas: () => void;
+  sendImage: () => void;
 }
 
-export const CanvasController: React.FC<CanvasControllerProps> = (props) => {
-  const {
-    currentColor,
-    drawingMode,
-    setCurrentColor,
-    toggleMode,
-    saveImage,
-    clearCanvas,
-  } = useCanvasController(props);
-
+export const CanvasController: React.FC<CanvasControllerProps> = ({
+  currentColor,
+  drawingMode,
+  setCurrentColor,
+  toggleMode,
+  saveImage,
+  clearCanvas,
+  sendImage,
+}) => {
   return (
     <div className="flex items-center gap-4">
       <div className="flex items-center gap-2">
@@ -90,6 +89,13 @@ export const CanvasController: React.FC<CanvasControllerProps> = (props) => {
         className="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded-md transition-colors"
       >
         전체 지우기
+      </button>
+
+      <button
+        onClick={sendImage}
+        className="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-md transition-colors"
+      >
+        GPT에 이미지 전송
       </button>
     </div>
   );

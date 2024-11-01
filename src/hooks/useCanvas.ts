@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from "react";
+import { sendMessage } from "../api";
 
 type DrawingMode = "draw" | "erase";
 
@@ -76,11 +77,14 @@ export const useCanvas = ({ width, height }: UseCanvasProps) => {
     setDrawingMode((prev) => (prev === "draw" ? "erase" : "draw"));
   };
 
-  const saveImage = () => {
+  const getBase64Image = () => {
     if (!canvasRef.current) return;
+    return canvasRef.current.toDataURL("image/png");
+  };
 
+  const getFileName = () => {
     const date = new Date();
-    const fileName = `drawing-${date.getFullYear()}${(date.getMonth() + 1)
+    return `drawing-${date.getFullYear()}${(date.getMonth() + 1)
       .toString()
       .padStart(2, "0")}${date.getDate().toString().padStart(2, "0")}-${date
       .getHours()
@@ -89,11 +93,28 @@ export const useCanvas = ({ width, height }: UseCanvasProps) => {
       .getSeconds()
       .toString()
       .padStart(2, "0")}`;
+  };
 
-    const image = canvasRef.current.toDataURL("image/png");
+  const sendImage = async () => {
+    const imageData = getBase64Image();
+    if (!imageData) {
+      throw new Error("Image data is not available");
+    }
+    const response = await sendMessage(imageData);
+    console.log(response);
+  };
+
+  const saveImage = () => {
+    if (!canvasRef.current) return;
+
+    const fileName = getFileName();
+    const imageData = getBase64Image();
+    if (!imageData) {
+      throw new Error("Image data is not available");
+    }
     const link = document.createElement("a");
     link.download = `${fileName}.png`;
-    link.href = image;
+    link.href = imageData;
     link.click();
   };
 
@@ -114,6 +135,7 @@ export const useCanvas = ({ width, height }: UseCanvasProps) => {
     setCurrentColor,
     toggleMode,
     saveImage,
+    sendImage,
     clearCanvas,
   };
 };
