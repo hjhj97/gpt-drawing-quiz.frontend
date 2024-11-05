@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useCanvas } from "../hooks/useCanvas";
 import { CanvasController } from "./CanvasController";
 import CanvasBottomText from "./CanvasBottomText";
@@ -15,7 +15,6 @@ const Canvas: React.FC<CanvasProps> = ({ width = 800, height = 600 }) => {
     drawingMode,
     startDrawing,
     draw,
-    stopDrawing,
     setCurrentColor,
     toggleMode,
     saveImage,
@@ -23,6 +22,8 @@ const Canvas: React.FC<CanvasProps> = ({ width = 800, height = 600 }) => {
     sendImage,
     message,
     isMessageLoading,
+    handleMouseUp,
+    undo,
   } = useCanvas({ width, height });
 
   return (
@@ -38,8 +39,8 @@ const Canvas: React.FC<CanvasProps> = ({ width = 800, height = 600 }) => {
         `}
         onMouseDown={startDrawing}
         onMouseMove={draw}
-        onMouseUp={stopDrawing}
-        onMouseOut={stopDrawing}
+        onMouseUp={handleMouseUp}
+        onMouseOut={handleMouseUp}
       />
       <CanvasController
         currentColor={currentColor}
@@ -50,6 +51,7 @@ const Canvas: React.FC<CanvasProps> = ({ width = 800, height = 600 }) => {
         sendImage={sendImage}
         isMessageLoading={isMessageLoading}
         clearCanvas={clearCanvas}
+        undo={undo}
       />
       <CanvasBottomText message={message} isMessageLoading={isMessageLoading} />
     </div>

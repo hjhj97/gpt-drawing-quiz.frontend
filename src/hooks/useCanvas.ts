@@ -25,6 +25,7 @@ export const useCanvas = ({ width, height }: UseCanvasProps) => {
   const [drawingMode, setDrawingMode] = useState<DrawingMode>("draw");
   const [isMessageLoading, setIsMessageLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
+  const [undoStack, setUndoStack] = useState<ImageData[]>([]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -40,6 +41,10 @@ export const useCanvas = ({ width, height }: UseCanvasProps) => {
   }, []);
 
   useEffect(() => {
+    addKeyboardEvent();
+  }, []);
+
+  useEffect(() => {
     if (!context) return;
 
     if (drawingMode === "erase") {
@@ -50,6 +55,17 @@ export const useCanvas = ({ width, height }: UseCanvasProps) => {
       context.strokeStyle = currentColor;
     }
   }, [drawingMode, currentColor, context]);
+
+  const addKeyboardEvent = () => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "z") {
+        undo();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  };
 
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>): void => {
     if (!context) return;
@@ -66,13 +82,6 @@ export const useCanvas = ({ width, height }: UseCanvasProps) => {
     const { offsetX, offsetY } = e.nativeEvent;
     context.lineTo(offsetX, offsetY);
     context.stroke();
-  };
-
-  const stopDrawing = (): void => {
-    if (!context) return;
-
-    context.closePath();
-    setIsDrawing(false);
   };
 
   const toggleMode = () => {
@@ -106,7 +115,6 @@ export const useCanvas = ({ width, height }: UseCanvasProps) => {
     try {
       setIsMessageLoading(true);
       const response = await sendMessage(imageData);
-      console.log(response);
       setMessage(response);
     } catch (error) {
       alert("서버 오류가 발생했습니다." + error);
@@ -132,9 +140,47 @@ export const useCanvas = ({ width, height }: UseCanvasProps) => {
   const clearCanvas = () => {
     if (!context || !canvasRef.current) return;
 
-    // 캔버스 전체 지우기
     context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
     setMessage("");
+  };
+
+  const saveState = () => {
+    if (!canvasRef.current || !isDrawing) return;
+    const ctx = canvasRef.current.getContext("2d");
+    if (!ctx) return;
+
+    const imageData = ctx.getImageData(
+      0,
+      0,
+      canvasRef.current.width,
+      canvasRef.current.height
+    );
+    setUndoStack((prev) => [...prev, imageData]);
+  };
+
+  const undo = () => {
+    if (!canvasRef.current || undoStack.length === 0) return;
+    const ctx = canvasRef.current.getContext("2d");
+    if (!ctx) return;
+
+    const newStack = [...undoStack];
+    newStack.pop();
+    const lastState = newStack[newStack.length - 1];
+
+    if (lastState) {
+      ctx.putImageData(lastState, 0, 0);
+      setUndoStack(newStack);
+    } else {
+      ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+      setUndoStack([]);
+    }
+  };
+
+  const handleMouseUp = () => {
+    if (isDrawing) {
+      saveState();
+    }
+    setIsDrawing(false);
   };
 
   return {
@@ -145,11 +191,12 @@ export const useCanvas = ({ width, height }: UseCanvasProps) => {
     drawingMode,
     startDrawing,
     draw,
-    stopDrawing,
     setCurrentColor,
     toggleMode,
     saveImage,
     sendImage,
     clearCanvas,
+    handleMouseUp,
+    undo,
   };
 };

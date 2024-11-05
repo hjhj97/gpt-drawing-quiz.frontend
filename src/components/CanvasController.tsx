@@ -36,6 +36,7 @@ interface CanvasControllerProps {
   clearCanvas: () => void;
   sendImage: () => void;
   isMessageLoading: boolean;
+  undo: () => void;
 }
 
 export const CanvasController: React.FC<CanvasControllerProps> = ({
@@ -47,6 +48,7 @@ export const CanvasController: React.FC<CanvasControllerProps> = ({
   clearCanvas,
   sendImage,
   isMessageLoading,
+  undo,
 }) => {
   return (
     <div className="flex items-center gap-4">
@@ -99,6 +101,13 @@ export const CanvasController: React.FC<CanvasControllerProps> = ({
         className="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-md transition-colors"
       >
         {isMessageLoading ? "전송중..." : "GPT에 이미지 전송"}
+      </button>
+
+      <button
+        onClick={undo}
+        className="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-md transition-colors"
+      >
+        ↩ 실행 취소
       </button>
     </div>
   );
